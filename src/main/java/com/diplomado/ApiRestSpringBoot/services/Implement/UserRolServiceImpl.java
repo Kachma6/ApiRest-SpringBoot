@@ -24,7 +24,8 @@ public class UserRolServiceImpl implements UserRolService {
 
     @Override
     public List<UserRolDTO> getUserRol() {
-        return (userRolRepository.findAll().stream().map(userRolMapper::toDto).collect(Collectors.toList()));
+        return (userRolRepository.findAll().stream()
+                .map(userRolMapper::toDto).collect(Collectors.toList()));
     }
 
     @Override

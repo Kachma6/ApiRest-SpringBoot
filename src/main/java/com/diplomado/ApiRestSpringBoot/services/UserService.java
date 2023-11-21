@@ -13,7 +13,9 @@ public interface UserService {
 
     Optional<UserShowDTO> getUserById(Long id);
 
-    UserShowDTO save(UserRegisterDTO dto);
+    UserShowDTO saveUserAndDetail(UserRegisterDTO user);
 
+    UserShowDTO save(UserRegisterDTO dto);
+    UserShowDTO saveWithRols(UserRegisterDTO dto);
     void delete(Long Id);
 }

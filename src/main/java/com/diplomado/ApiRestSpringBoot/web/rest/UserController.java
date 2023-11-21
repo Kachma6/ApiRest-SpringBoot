@@ -55,16 +55,7 @@ public class UserController {
             throw new IllegalArgumentException("El usuario ya tiene una cuenta creada");
 
         }
-        UserRegisterDTO aux = new UserRegisterDTO();
-        aux.setUsername(user.getUsername());
-        aux.setEmail(user.getEmail());
-        aux.setPassword(user.getPassword());
-        aux.setCreatedAt(LocalDateTime.now());
-        UserShowDTO userdb= userService.save(aux);
-
-        UserDetailDTO dto = userDetailMapper.toDto(user.getUserDetail());
-        dto.getUser().setId(userdb.getId());
-        userDetailService.save(dto);
+        UserShowDTO userdb = userService.saveUserAndDetail(user);
         return ResponseEntity.created(new URI("/v1/users/"+userdb.getId() )).body(userdb);
     }
     @PostMapping
@@ -82,29 +73,9 @@ public class UserController {
     public ResponseEntity<UserShowDTO> saveUserWithRols(@RequestBody final UserRegisterDTO user) throws URISyntaxException {
         if( user.getId() != null ){
             throw new IllegalArgumentException("El usuario ya tiene una cuanta creada");
-
         }
         user.setCreatedAt(LocalDateTime.now());
-        UserShowDTO userdb= userService.save(user);
-
-        Set<UserRol> roles = user.getUserRols();
-        for(UserRol rol: roles){
-            UserRolDTO roldto = new UserRolDTO();
-
-            Rol rolito = new Rol();
-            rolito.setId(rol.getId());
-
-            User user1 = new User();
-            user1.setId(userdb.getId());
-
-            roldto.setRol(rolito);
-            roldto.setUser(user1);
-
-            roldto.setActive(true);
-            roldto.setCreatedAt(LocalDateTime.now());
-            userRolService.save(roldto);
-        }
-
+        UserShowDTO userdb= userService.saveWithRols(user);
         return ResponseEntity.created(new URI("/v1/users/"+userdb.getId() )).body(userdb);
     }
 
