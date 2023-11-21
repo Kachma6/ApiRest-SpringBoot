@@ -20,8 +20,8 @@ public class Rol {
     private Integer id;
     private String name;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "rol")
+  @JsonIgnore
+    @OneToMany(mappedBy = "rol",cascade = CascadeType.ALL)
     Set<UserRol> userRols;
     public Rol() {
     }

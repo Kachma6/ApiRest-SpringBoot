@@ -2,8 +2,11 @@ package com.diplomado.ApiRestSpringBoot.DTO;
 
 import com.diplomado.ApiRestSpringBoot.domain.entities.UserDetail;
 import com.diplomado.ApiRestSpringBoot.domain.entities.UserRol;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -13,7 +16,14 @@ public class UserShowDTO {
     private String username;
     private String email;
     private LocalDateTime createdAt;
+
     private UserDetail userDetail;
-//    private Set<UserRol> userRols;
+////    private Set<UserDetail> listaDetail;
+//    private String firstName;
+//    private String lastName;
+//    private Integer age;
+//    private LocalDate birthDay;
+
+   private Set<String> userRolsNames;
 
 }

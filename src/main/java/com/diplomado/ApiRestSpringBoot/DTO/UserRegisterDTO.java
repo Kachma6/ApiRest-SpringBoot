@@ -16,6 +16,7 @@ public class UserRegisterDTO {
     private String email;
     private LocalDateTime createdAt;
     private UserDetail userDetail;
+    private Set<UserRol> userRols;
 
 
 

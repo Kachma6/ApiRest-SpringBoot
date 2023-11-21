@@ -16,6 +16,7 @@ import java.util.Set;
 
 @Table(name = "user", schema = "public")
 public class User implements Serializable {
+    private static final long serialVersionUID = 8799656478674712001L;
     @Id
     @SequenceGenerator(name ="user_sequence" , allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
@@ -27,11 +28,11 @@ public class User implements Serializable {
     private LocalDateTime createdAt;
 
   @JsonIgnore
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserDetail userDetail;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
+  @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     Set<UserRol> userRols;
 
 

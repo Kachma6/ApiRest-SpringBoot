@@ -1,9 +1,13 @@
 package com.diplomado.ApiRestSpringBoot.web.rest;
 
-import com.diplomado.ApiRestSpringBoot.DTO.UserRegisterDTO;
-import com.diplomado.ApiRestSpringBoot.DTO.UserShowDTO;
+import com.diplomado.ApiRestSpringBoot.DTO.*;
+import com.diplomado.ApiRestSpringBoot.domain.entities.Rol;
+import com.diplomado.ApiRestSpringBoot.domain.entities.User;
+import com.diplomado.ApiRestSpringBoot.domain.entities.UserRol;
 import com.diplomado.ApiRestSpringBoot.services.UserDetailService;
+import com.diplomado.ApiRestSpringBoot.services.UserRolService;
 import com.diplomado.ApiRestSpringBoot.services.UserService;
+import com.diplomado.ApiRestSpringBoot.services.mapper.UserDetailMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,35 +15,95 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/v1/users")
 public class UserController {
     private final UserService userService;
+    private final UserRolService userRolService;
+
+    private final UserDetailService userDetailService;
+    private final UserDetailMapper userDetailMapper;
 
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRolService userRolService, UserDetailService userDetailService, UserDetailMapper userDetailMapper) {
         this.userService = userService;
+        this.userRolService = userRolService;
+        this.userDetailService = userDetailService;
+        this.userDetailMapper = userDetailMapper;
     }
 
     @GetMapping
-    public ResponseEntity<List<UserShowDTO>> getUsers(){
-        return ResponseEntity.ok().body(userService.getUsers());
+    public ResponseEntity<List<UserShowDTO>> getUsers(@RequestParam(required = false, defaultValue = "false")
+                                                          boolean detailed){
+        if(detailed){
+            return ResponseEntity.ok().body(userService.getUsersDetail());
+        }else{
+            return ResponseEntity.ok().body(userService.getUsers());
+        }
+
     }
     @GetMapping("/{id}")
     public ResponseEntity<UserShowDTO> getUserById(@PathVariable final Long id){
         return ResponseEntity.ok().body(userService.getUserById(id)
                 .orElseThrow(()->new IllegalArgumentException("No existe el registro")));
     }
+    @PostMapping("/detail")
+    public ResponseEntity<UserShowDTO> saveUserAndDetail(@RequestBody final UserRegisterDTO user) throws URISyntaxException {
+        if( user.getId() != null ){
+            throw new IllegalArgumentException("El usuario ya tiene una cuenta creada");
 
+        }
+        UserRegisterDTO aux = new UserRegisterDTO();
+        aux.setUsername(user.getUsername());
+        aux.setEmail(user.getEmail());
+        aux.setPassword(user.getPassword());
+        aux.setCreatedAt(LocalDateTime.now());
+        UserShowDTO userdb= userService.save(aux);
+
+        UserDetailDTO dto = userDetailMapper.toDto(user.getUserDetail());
+        dto.getUser().setId(userdb.getId());
+        userDetailService.save(dto);
+        return ResponseEntity.created(new URI("/v1/users/"+userdb.getId() )).body(userdb);
+    }
     @PostMapping
     public ResponseEntity<UserShowDTO> saveUser(@RequestBody final UserRegisterDTO user) throws URISyntaxException {
         if( user.getId() != null ){
-            throw new IllegalArgumentException("El rol ya tiene un id");
+            throw new IllegalArgumentException("El usuario ya tiene una cuenta creada");
 
         }
         user.setCreatedAt(LocalDateTime.now());
         UserShowDTO userdb= userService.save(user);
+
+        return ResponseEntity.created(new URI("/v1/users/"+userdb.getId() )).body(userdb);
+    }
+    @PostMapping("/rols")
+    public ResponseEntity<UserShowDTO> saveUserWithRols(@RequestBody final UserRegisterDTO user) throws URISyntaxException {
+        if( user.getId() != null ){
+            throw new IllegalArgumentException("El usuario ya tiene una cuanta creada");
+
+        }
+        user.setCreatedAt(LocalDateTime.now());
+        UserShowDTO userdb= userService.save(user);
+
+        Set<UserRol> roles = user.getUserRols();
+        for(UserRol rol: roles){
+            UserRolDTO roldto = new UserRolDTO();
+
+            Rol rolito = new Rol();
+            rolito.setId(rol.getId());
+
+            User user1 = new User();
+            user1.setId(userdb.getId());
+
+            roldto.setRol(rolito);
+            roldto.setUser(user1);
+
+            roldto.setActive(true);
+            roldto.setCreatedAt(LocalDateTime.now());
+            userRolService.save(roldto);
+        }
 
         return ResponseEntity.created(new URI("/v1/users/"+userdb.getId() )).body(userdb);
     }

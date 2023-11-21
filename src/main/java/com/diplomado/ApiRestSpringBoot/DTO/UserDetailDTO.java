@@ -12,7 +12,7 @@ public class UserDetailDTO {
     private String lastName;
     private Integer age;
     private LocalDate birthDay;
-//    private User user;
+   private User user;
 
     public UserDetailDTO() {
     }

@@ -11,6 +11,7 @@ public class RolMapper implements CustomMapper<RolDTO, Rol> {
         RolDTO rolDTO  = new RolDTO();
         rolDTO.setId(rol.getId());
         rolDTO.setName(rol.getName());
+//        rolDTO.setUserRols(rol.getUserRols());
         return rolDTO;
     }
 
@@ -19,6 +20,7 @@ public class RolMapper implements CustomMapper<RolDTO, Rol> {
         Rol rol = new Rol();
         rol.setId(rolDTO.getId());
         rol.setName(rolDTO.getName());
+//        rol.setUserRols(rolDTO.getUserRols());
         return rol;
     }
 }

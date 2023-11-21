@@ -14,7 +14,8 @@ public class UserRegisterMapper implements CustomMapper<UserRegisterDTO, User> {
         register.setEmail(user.getEmail());
         register.setCreatedAt(user.getCreatedAt());
         register.setPassword(user.getPassword());
-        register.setUserDetail(user.getUserDetail());
+       register.setUserDetail(user.getUserDetail());
+       register.setUserRols(user.getUserRols());
         return register;
 
     }
@@ -27,7 +28,8 @@ public class UserRegisterMapper implements CustomMapper<UserRegisterDTO, User> {
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
         user.setCreatedAt(userDTO.getCreatedAt());
-        user.setUserDetail(userDTO.getUserDetail());
+       user.setUserDetail(userDTO.getUserDetail());
+       user.setUserRols(userDTO.getUserRols());
 
         return user;
     }
