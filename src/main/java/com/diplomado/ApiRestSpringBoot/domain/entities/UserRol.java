@@ -18,11 +18,21 @@ public class UserRol {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "rol_id")
+    private Rol rol;
+
     public UserRol() {
     }
 
-    public UserRol(Boolean active, LocalDateTime createdAt) {
+    public UserRol(Boolean active, LocalDateTime createdAt, User user, Rol rol) {
         this.active = active;
         this.createdAt = createdAt;
+        this.user = user;
+        this.rol = rol;
     }
 }
