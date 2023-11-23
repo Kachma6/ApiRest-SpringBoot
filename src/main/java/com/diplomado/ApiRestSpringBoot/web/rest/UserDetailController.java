@@ -2,6 +2,7 @@ package com.diplomado.ApiRestSpringBoot.web.rest;
 
 import com.diplomado.ApiRestSpringBoot.DTO.UserDetailDTO;
 import com.diplomado.ApiRestSpringBoot.domain.entities.UserDetail;
+import com.diplomado.ApiRestSpringBoot.exception.ResourceNotFoundException;
 import com.diplomado.ApiRestSpringBoot.repositories.UserDetailRepository;
 import com.diplomado.ApiRestSpringBoot.services.UserDetailService;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,12 @@ public class UserDetailController {
                 .orElseThrow(()-> new IllegalArgumentException("No existe ningun recurso con ese id")));
 
     }
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<UserDetailDTO> getUserDetailByIdUser(@PathVariable Long userId){
+        return ResponseEntity.ok().body(userDetailService.getUserDetailByIdUser(userId)
+                .orElseThrow(()-> new ResourceNotFoundException("UserDetail", "idUser",userId)));
+
+    }
     @PostMapping
     public ResponseEntity<UserDetailDTO> createUserDetail(@RequestBody UserDetailDTO dto) throws URISyntaxException {
         if(dto.getId() != null){
@@ -37,5 +44,10 @@ public class UserDetailController {
         }
         UserDetailDTO userDetail1 = userDetailService.save(dto);
         return ResponseEntity.created(new URI("/v1/user-detail/"+userDetail1.getId())).body(userDetail1);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id){
+        userDetailService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

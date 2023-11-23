@@ -25,7 +25,7 @@ public class RolServiceImpl implements RolService {
     @Override
     public List<RolDTO> getRols() {
         return rolRepository.findAll().stream()
-                .map(rolMapper::toDto).collect(Collectors.toList());
+                .map(rolMapper::toShowDto).collect(Collectors.toList());
     }
 
     @Override

@@ -33,6 +33,11 @@ public class UserDetailServiceImpl implements UserDetailService {
     }
 
     @Override
+    public Optional<UserDetailDTO> getUserDetailByIdUser(Long idUser) {
+        return Optional.of(userDetailMapper.toDto( userDetailRepository.findByUser_Id(idUser) ));
+    }
+
+    @Override
     public UserDetailDTO save(UserDetailDTO dto) {
         return userDetailMapper.toDto( userDetailRepository.save(userDetailMapper.toEntity(dto)));
     }

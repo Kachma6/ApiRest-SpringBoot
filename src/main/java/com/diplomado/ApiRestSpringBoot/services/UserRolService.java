@@ -15,6 +15,7 @@ public interface UserRolService {
 
     UserRolDTO save(UserRolDTO dto);
 
+
     void delete(Integer Id);
 
    UserRolDTO unsuscribeRol(Integer rolId, Long userId);

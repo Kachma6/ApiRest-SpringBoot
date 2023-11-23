@@ -32,7 +32,7 @@ public class User implements Serializable {
     private UserDetail userDetail;
 
   @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     Set<UserRol> userRols;
 
 

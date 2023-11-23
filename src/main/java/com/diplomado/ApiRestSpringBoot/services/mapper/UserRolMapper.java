@@ -4,6 +4,10 @@ import com.diplomado.ApiRestSpringBoot.DTO.UserRolDTO;
 import com.diplomado.ApiRestSpringBoot.domain.entities.UserRol;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 @Component
 public class UserRolMapper implements CustomMapper<UserRolDTO, UserRol>{
     @Override
@@ -16,6 +20,7 @@ public class UserRolMapper implements CustomMapper<UserRolDTO, UserRol>{
         dto.setRol(userRol.getRol());
         return dto;
     }
+
 
     @Override
     public UserRol toEntity(UserRolDTO userRolDTO) {

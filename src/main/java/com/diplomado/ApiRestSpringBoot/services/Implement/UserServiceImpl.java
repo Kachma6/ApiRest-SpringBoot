@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
         aux.setCreatedAt(LocalDateTime.now());
         User userdb= userRepository.save(aux);
 //Generar una inconsistencia
-       Integer.parseInt(user.getUserDetail().getFirstName());
+//       Integer.parseInt(user.getUserDetail().getFirstName());
         UserDetail userDetail = user.getUserDetail();
         userDetail.getUser().setId(userdb.getId());
         userDetailRepository.save(userDetail);

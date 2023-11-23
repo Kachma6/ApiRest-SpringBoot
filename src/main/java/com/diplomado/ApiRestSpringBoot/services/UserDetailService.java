@@ -12,6 +12,8 @@ public interface UserDetailService {
 
     Optional<UserDetailDTO> getUserDetailById(Integer id);
 
+    Optional<UserDetailDTO> getUserDetailByIdUser(Long idUser);
+
    UserDetailDTO save(UserDetailDTO dto);
 
     void delete(Integer Id);

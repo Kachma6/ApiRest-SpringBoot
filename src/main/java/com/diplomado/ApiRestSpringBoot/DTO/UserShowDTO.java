@@ -18,11 +18,7 @@ public class UserShowDTO {
     private LocalDateTime createdAt;
 
     private UserDetail userDetail;
-////    private Set<UserDetail> listaDetail;
-//    private String firstName;
-//    private String lastName;
-//    private Integer age;
-//    private LocalDate birthDay;
+
 
    private Set<String> userRolsNames;
 

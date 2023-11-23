@@ -28,7 +28,10 @@ public class UserShowMapper implements CustomMapper<UserShowDTO, User>{
         showDTO.setUsername(user.getUsername());
         showDTO.setEmail(user.getEmail());
         showDTO.setCreatedAt(user.getCreatedAt());
+
         showDTO.setUserDetail(user.getUserDetail());
+
+
         if(!user.getUserRols().isEmpty()){
             Set<String>roles = new HashSet<>();
             ArrayList<UserRol> rols = new ArrayList<>(user.getUserRols());

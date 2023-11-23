@@ -2,7 +2,9 @@ package com.diplomado.ApiRestSpringBoot.web.rest;
 
 import com.diplomado.ApiRestSpringBoot.DTO.RolDTO;
 import com.diplomado.ApiRestSpringBoot.domain.entities.Rol;
+import com.diplomado.ApiRestSpringBoot.exception.ResourceNotFoundException;
 import com.diplomado.ApiRestSpringBoot.services.RolService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,11 +28,11 @@ public class RolController {
     @GetMapping("/{id}")
     public ResponseEntity<RolDTO> getRolsById(@PathVariable final Integer id){
         return ResponseEntity.ok().body(rolService.getRolById(id)
-                .orElseThrow(()->new IllegalArgumentException("No existe el registro")));
+                .orElseThrow(()->new ResourceNotFoundException("Rol", "id", id)));
     }
 
     @PostMapping
-    public ResponseEntity<RolDTO> saveRol(@RequestBody final RolDTO rol) throws URISyntaxException {
+    public ResponseEntity<RolDTO> saveRol(@Valid @RequestBody final RolDTO rol) throws URISyntaxException {
         if( rol.getId()!= null ){
            throw new IllegalArgumentException("El rol ya tiene un id");
 

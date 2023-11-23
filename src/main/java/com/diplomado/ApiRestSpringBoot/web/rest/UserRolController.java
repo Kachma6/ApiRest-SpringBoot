@@ -3,6 +3,7 @@ package com.diplomado.ApiRestSpringBoot.web.rest;
 import com.diplomado.ApiRestSpringBoot.DTO.UserRolDTO;
 import com.diplomado.ApiRestSpringBoot.domain.entities.UserRol;
 import com.diplomado.ApiRestSpringBoot.services.UserRolService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class UserRolController {
         return ResponseEntity.ok().body(userRolService.getUserRol());
     }
     @PostMapping
-    public ResponseEntity<UserRolDTO> create(@RequestBody UserRolDTO userRol) throws URISyntaxException {
+    public ResponseEntity<UserRolDTO> create(@Valid @RequestBody UserRolDTO userRol) throws URISyntaxException {
         if (userRol.getId() != null){
             throw new IllegalArgumentException("El archivo ya contiene un id");
         }
