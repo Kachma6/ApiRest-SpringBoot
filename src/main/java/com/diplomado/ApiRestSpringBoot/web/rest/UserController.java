@@ -5,12 +5,17 @@ import com.diplomado.ApiRestSpringBoot.domain.entities.Rol;
 import com.diplomado.ApiRestSpringBoot.domain.entities.User;
 import com.diplomado.ApiRestSpringBoot.domain.entities.UserRol;
 import com.diplomado.ApiRestSpringBoot.exception.ResourceNotFoundException;
+import com.diplomado.ApiRestSpringBoot.exception.ServerResponseException;
 import com.diplomado.ApiRestSpringBoot.exception.UserAlreadyExistsException;
 import com.diplomado.ApiRestSpringBoot.services.UserDetailService;
 import com.diplomado.ApiRestSpringBoot.services.UserRolService;
 import com.diplomado.ApiRestSpringBoot.services.UserService;
 import com.diplomado.ApiRestSpringBoot.services.mapper.UserDetailMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import jakarta.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -58,15 +63,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUserById(id)
                 .orElseThrow(()->new ResourceNotFoundException("user","id",id)));
     }
-    @PostMapping("/detail")
-    public ResponseEntity<UserShowDTO> saveUserAndDetail(@Valid @RequestBody final UserRegisterDTO user) throws URISyntaxException {
-        if( user.getId() != null ){
-            throw new UserAlreadyExistsException("Id doesn't acept to created");
 
-        }
-        UserShowDTO userdb = userService.saveUserAndDetail(user);
-        return ResponseEntity.created(new URI("/v1/users/"+userdb.getId() )).body(userdb);
-    }
     @PostMapping
     public ResponseEntity<UserShowDTO> saveUser(@Valid @RequestBody final UserRegisterDTO user) throws URISyntaxException {
         if( user.getId() != null ){
@@ -74,32 +71,56 @@ public class UserController {
 
         }
         user.setCreatedAt(LocalDateTime.now());
-        UserShowDTO userdb= userService.save(user);
+        UserShowDTO userdb = new UserShowDTO();
+
+        if(user.getUserDetail() != null){
+             userdb= userService.saveUserAndDetail(user);
+        }else{
+             userdb= userService.save(user);
+        }
 
         return ResponseEntity.created(new URI("/v1/users/"+userdb.getId() )).body(userdb);
     }
     @PostMapping("/rols")
-    public ResponseEntity<UserShowDTO> saveUserWithRols(@RequestBody final UserRegisterDTO user) throws URISyntaxException {
+    public ResponseEntity<UserShowDTO> saveUserWithRols(@Valid @RequestBody final UserRegisterDTO user) throws URISyntaxException {
         if( user.getId() != null ){
-            throw new IllegalArgumentException("El usuario ya tiene una cuanta creada");
+            throw new UserAlreadyExistsException("El usuario ya tiene una cuanta creada");
         }
         user.setCreatedAt(LocalDateTime.now());
-        UserShowDTO userdb= userService.saveWithRols(user);
-        return ResponseEntity.created(new URI("/v1/users/"+userdb.getId() )).body(userdb);
+
+       try {
+           UserShowDTO userdb= userService.saveWithRols(user);
+           return ResponseEntity.created(new URI("/v1/users/"+userdb.getId() )).body(userdb);
+       }catch (Exception e){
+            throw new ServerResponseException("El recurso no se creo por que el email es repetido u por problemas del servidor");
+       }
+
+
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserShowDTO> editRol(@PathVariable final Long id, @RequestBody final UserRegisterDTO user){
         if(id != user.getId()  || user.getId() == null){
-            throw new IllegalArgumentException("Id not match or don't exist");
+            throw new UserAlreadyExistsException("Id not match or don't exist");
         }
-        UserShowDTO userdb = userService.save(user);
+
+        UserRegisterDTO nuevo = new UserRegisterDTO();
+        nuevo.setId(user.getId());
+        nuevo.setUsername(user.getUsername());
+        nuevo.setPassword(user.getPassword());
+        nuevo.setEmail(user.getEmail());
+        UserShowDTO userdb = userService.save(nuevo);
         return ResponseEntity.ok().body(userdb);
     }
     @DeleteMapping("/{id}")
     private ResponseEntity<Void> deleteRol(@PathVariable final Long id){
         userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserShowDTO> updateCustomer(@PathVariable Long id, @RequestBody Map<String,Object> user) {
+         UserShowDTO dto = userService.edit(id, user);
+         return ResponseEntity.ok().body(dto);
     }
 
 

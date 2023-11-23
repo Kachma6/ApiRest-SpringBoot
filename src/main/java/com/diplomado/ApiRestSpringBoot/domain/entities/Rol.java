@@ -18,6 +18,7 @@ public class Rol {
     @SequenceGenerator(name ="rol_sequence",allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rol_sequence" )
     private Integer id;
+    @Column(unique = true)
     private String name;
 
   @JsonIgnore

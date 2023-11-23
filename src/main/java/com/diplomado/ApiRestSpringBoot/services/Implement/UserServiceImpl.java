@@ -12,11 +12,15 @@ import com.diplomado.ApiRestSpringBoot.repositories.UserRolRepository;
 import com.diplomado.ApiRestSpringBoot.services.UserService;
 import com.diplomado.ApiRestSpringBoot.services.mapper.UserRegisterMapper;
 import com.diplomado.ApiRestSpringBoot.services.mapper.UserShowMapper;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -116,5 +120,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long Id) {
         userRepository.deleteById(Id);
+    }
+
+    @Override
+    public UserShowDTO edit(Long id, Map<String, Object> fields) {
+        User existingUser = userRepository.findById(id).get();
+
+
+            fields.forEach((key, value) -> {
+                Field field = ReflectionUtils.findField(User.class,key);
+                field.setAccessible(true);
+                ReflectionUtils.setField(field,existingUser,value);
+            });
+            return userShowMapper.toDto(userRepository.save(existingUser));
+
+
     }
 }

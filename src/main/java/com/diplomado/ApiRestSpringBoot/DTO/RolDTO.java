@@ -1,6 +1,7 @@
 package com.diplomado.ApiRestSpringBoot.DTO;
 
 import com.diplomado.ApiRestSpringBoot.domain.entities.UserRol;
+import jakarta.persistence.Column;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

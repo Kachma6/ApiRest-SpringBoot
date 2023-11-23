@@ -2,6 +2,7 @@ package com.diplomado.ApiRestSpringBoot.web.rest;
 
 import com.diplomado.ApiRestSpringBoot.DTO.RolDTO;
 import com.diplomado.ApiRestSpringBoot.domain.entities.Rol;
+import com.diplomado.ApiRestSpringBoot.exception.RecurseAlreadyExistsException;
 import com.diplomado.ApiRestSpringBoot.exception.ResourceNotFoundException;
 import com.diplomado.ApiRestSpringBoot.services.RolService;
 import jakarta.validation.Valid;
@@ -34,7 +35,7 @@ public class RolController {
     @PostMapping
     public ResponseEntity<RolDTO> saveRol(@Valid @RequestBody final RolDTO rol) throws URISyntaxException {
         if( rol.getId()!= null ){
-           throw new IllegalArgumentException("El rol ya tiene un id");
+           throw new RecurseAlreadyExistsException("El rol ya tiene un id");
 
         }
 

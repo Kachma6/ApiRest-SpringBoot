@@ -32,6 +32,22 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response,HttpStatus.NOT_ACCEPTABLE);
     }
+    @ExceptionHandler(RecurseAlreadyExistsException.class)
+    public ResponseEntity<Response> handlerUserAlreadyExistsException(RecurseAlreadyExistsException exception,
+                                                                      WebRequest webRequest){
+        Response response = new Response(exception.getMessage(),new Date(), webRequest.getDescription(false),
+                HttpStatus.NOT_ACCEPTABLE.getReasonPhrase());
+
+        return new ResponseEntity<>(response,HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(ServerResponseException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handlerUserAlreadyExistsException(ServerResponseException exception){
+
+        String massege = "Error interno"+ exception.getMessage();
+        return new ResponseEntity<>(massege,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
