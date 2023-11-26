@@ -19,6 +19,7 @@ public class UserShowMapper implements CustomMapper<UserShowDTO, User>{
         showDTO.setUsername(user.getUsername());
         showDTO.setEmail(user.getEmail());
         showDTO.setCreatedAt(user.getCreatedAt());
+
         return showDTO;
     }
 
@@ -32,14 +33,14 @@ public class UserShowMapper implements CustomMapper<UserShowDTO, User>{
         showDTO.setUserDetail(user.getUserDetail());
 
 
-        if(!user.getUserRols().isEmpty()){
-            Set<String>roles = new HashSet<>();
-            ArrayList<UserRol> rols = new ArrayList<>(user.getUserRols());
-            for(int i=0; i< user.getUserRols().size();i++){
-                roles.add(rols.get(i).getRol().getName());
-            }
-            showDTO.setUserRolsNames(roles);
-        }
+//        if(!user.getUserRols().isEmpty()){
+//            Set<String>roles = new HashSet<>();
+//            ArrayList<UserRol> rols = new ArrayList<>(user.getUserRols());
+//            for(int i=0; i< user.getUserRols().size();i++){
+//                roles.add(rols.get(i).getRol().getName());
+//            }
+//            showDTO.setUserRolsNames(roles);
+//        }
 
 
         return showDTO;

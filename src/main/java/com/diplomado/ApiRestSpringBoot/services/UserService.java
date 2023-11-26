@@ -9,15 +9,15 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
-    List<UserShowDTO> getUsers();
-    List<UserShowDTO> getUsersDetail();
+    List<UserRegisterDTO> getUsers();
+    List<UserRegisterDTO> getUsersDetail();
 
-    Optional<UserShowDTO> getUserById(Long id);
+    Optional<UserRegisterDTO> getUserById(Long id);
 
-    UserShowDTO saveUserAndDetail(UserRegisterDTO user);
+    UserRegisterDTO saveUserAndDetail(UserRegisterDTO user);
 
-    UserShowDTO save(UserRegisterDTO dto);
-    UserShowDTO saveWithRols(UserRegisterDTO dto);
+    UserRegisterDTO save(UserRegisterDTO dto);
+//    UserShowDTO saveWithRols(UserRegisterDTO dto);
     void delete(Long Id);
 
     UserShowDTO edit (Long id, Map<String,Object> fields);

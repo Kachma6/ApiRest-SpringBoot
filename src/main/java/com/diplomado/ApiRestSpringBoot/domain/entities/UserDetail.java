@@ -27,8 +27,8 @@ public class UserDetail implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private LocalDate birthDay;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
 
@@ -36,11 +36,11 @@ public class UserDetail implements Serializable {
     public UserDetail() {
     }
 
-    public UserDetail(String firstName, String lastName, Integer age, LocalDate birthDay) {
+    public UserDetail(String firstName, String lastName, Integer age, LocalDate birthDay, User user) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.birthDay = birthDay;
-
+        this.user = user;
     }
 }

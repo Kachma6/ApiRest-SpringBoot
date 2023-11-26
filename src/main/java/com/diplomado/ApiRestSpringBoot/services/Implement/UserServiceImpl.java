@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRegisterMapper userRegisterMapper;
 
-    private final UserRolRepository userRolRepository;
+ private final UserRolRepository userRolRepository;
     private final UserDetailRepository userDetailRepository;
 
     public UserServiceImpl(UserRepository userRepository, UserShowMapper userShowMapper, UserRegisterMapper userRegisterMapper, UserRolRepository userRolRepository, UserDetailRepository userDetailRepository) {
@@ -49,73 +49,83 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserShowDTO> getUsers() {
+    public List<UserRegisterDTO> getUsers() {
         return userRepository.findAll().stream()
-                .map(userShowMapper::toDto).collect(Collectors.toList());
+                .map(userRegisterMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserShowDTO> getUsersDetail() {
+    public List<UserRegisterDTO> getUsersDetail() {
         return  userRepository.findAll().stream()
-                .map(userShowMapper::toDtoDetail).collect(Collectors.toList());
+                .map(userRegisterMapper::toDtoDetailed).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<UserShowDTO> getUserById(Long id) {
-        return userRepository.findById(id).map(userShowMapper::toDto);
+    public Optional<UserRegisterDTO> getUserById(Long id) {
+        return userRepository.findById(id).map(userRegisterMapper::toDtoDetailed);
     }
 
     @Override
 
-    public UserShowDTO saveUserAndDetail(UserRegisterDTO user) {
-        User aux = new User();
-        aux.setUsername(user.getUsername());
-        aux.setEmail(user.getEmail());
-        aux.setPassword(user.getPassword());
-        aux.setCreatedAt(LocalDateTime.now());
-        User userdb= userRepository.save(aux);
+    public UserRegisterDTO saveUserAndDetail(UserRegisterDTO user) {
+        User userdb = userRepository.save(userRegisterMapper.toEntity(user));
+
 ////Generar una inconsistencia
 //   Integer.parseInt(user.getUserDetail().getFirstName());
-        UserDetail userDetail = user.getUserDetail();
-        userDetail.getUser().setId(userdb.getId());
-        userDetailRepository.save(userDetail);
-        return userShowMapper.toDto(userdb);
+
+        if(user.getId() != null){
+            UserDetail userDetail = new UserDetail();
+            userDetail.setFirstName(user.getFirstName());
+            userDetail.setId(user.getIduserDetail());
+            userDetail.setLastName(user.getLastName());
+            userDetail.setAge(user.getAge());
+            userDetail.setBirthDay(user.getBirthDay());
+            userDetail.setUser(userdb);
+
+            userDetailRepository.save(userDetail);
+        }else{
+            userDetailRepository.save(new UserDetail(user.getFirstName(),
+                    user.getLastName(),user.getAge(), user.getBirthDay(),userdb));
+        }
+
+
+        return userRegisterMapper.toDto(userdb);
     }
 
     @Override
-    public UserShowDTO save(UserRegisterDTO dto) {
+    public UserRegisterDTO save(UserRegisterDTO dto) {
         User user= userRepository.save(userRegisterMapper.toEntity(dto));
-        return userShowMapper.toDto(user);
+        return userRegisterMapper.toDto(user);
     }
-    public UserShowDTO saveWithRols(UserRegisterDTO dto){
-        User userregistrer = new User();
-        userregistrer.setUsername(dto.getUsername());
-        userregistrer.setEmail(dto.getEmail());
-        userregistrer.setPassword(dto.getPassword());
-        userregistrer.setCreatedAt(dto.getCreatedAt());
-
-        User user = userRepository.save(userregistrer);
-        Set<UserRol> roles = dto.getUserRols();
-        for(UserRol rol: roles){
-            UserRol roldto = new UserRol();
-
-            Rol rolito = new Rol();
-            rolito.setId(rol.getId());
-
-            User user1 = new User();
-            user1.setId(user.getId());
-
-            roldto.setRol(rolito);
-            roldto.setUser(user1);
-
-            roldto.setActive(true);
-            roldto.setCreatedAt(LocalDateTime.now());
-            userRolRepository.save(roldto);
-        }
-        return userShowMapper.toDto(user);
-    }
+//    public UserShowDTO saveWithRols(UserRegisterDTO dto){
+//        User userregistrer = new User();
+//        userregistrer.setUsername(dto.getUsername());
+//        userregistrer.setEmail(dto.getEmail());
+//        userregistrer.setPassword(dto.getPassword());
+//        userregistrer.setCreatedAt(dto.getCreatedAt());
+//
+//        User user = userRepository.save(userregistrer);
+//        Set<UserRol> roles = dto.getUserRols();
+//        for(UserRol rol: roles){
+//            UserRol roldto = new UserRol();
+//
+//            Rol rolito = new Rol();
+//            rolito.setId(rol.getId());
+//
+//            User user1 = new User();
+//            user1.setId(user.getId());
+//
+//            roldto.setRol(rolito);
+//            roldto.setUser(user1);
+//
+//            roldto.setActive(true);
+//            roldto.setCreatedAt(LocalDateTime.now());
+//            userRolRepository.save(roldto);
+//        }
+//        return userShowMapper.toDto(user);
+//    }
 
     @Override
     public void delete(Long Id) {

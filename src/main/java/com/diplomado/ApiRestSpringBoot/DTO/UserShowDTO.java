@@ -20,6 +20,6 @@ public class UserShowDTO {
     private UserDetail userDetail;
 
 
-   private Set<String> userRolsNames;
+//   private Set<String> userRolsNames;
 
 }
